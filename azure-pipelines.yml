@@ -1,0 +1,45 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '14.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    pwd
+    ls -l
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '/home/vsts/work/1/s/'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: 'drop'
+    replaceExistingArchive: true
+    
+- script: |
+    pwd
+    ls -l
+
+- task: LambdaDeployFunction@1
+  inputs:
+    awsCredentials: 'awsconnection'
+    regionName: 'ap-south-1'
+    deploymentMode: 'codeandconfiguration'
+    functionName: 'DecisionEngine'
+    functionHandler: 's/index.handler'
+    runtime: 'nodejs12.x'
+    codeLocation: 'localfile'
+    localZipFile: 'drop.zip'
+    roleARN: 'cloudform-LambdaExecutionRole-1XRKE2AES4R75'
+    environment: 'StateMachineArn=arn:aws:states:ap-south-1:618393550001:stateMachine:PBLoanProcessOrchestration'

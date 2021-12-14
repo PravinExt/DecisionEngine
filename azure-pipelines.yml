@@ -36,7 +36,7 @@ steps:
     awsCredentials: 'awsconnection'
     regionName: 'ap-south-1'
     deploymentMode: 'codeandconfiguration'
-    functionName: 'DecisionEngine'
+    functionName: 'MockDecisionEngine'
     functionHandler: 's/index.handler'
     runtime: 'nodejs12.x'
     codeLocation: 'localfile'
